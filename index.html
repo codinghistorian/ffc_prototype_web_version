@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FFC Prototype</title>
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+
+      #game-shell {
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+      }
+
+      #bevy-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        outline: none;
+        touch-action: none;
+      }
+
+      #launch-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 44%, rgba(210, 170, 110, 0.14), transparent 28rem),
+          #000;
+        color: #f1dfbd;
+        font-family: Georgia, "Times New Roman", serif;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      #launch-overlay.hidden {
+        display: none;
+      }
+
+      #launch-overlay.intro-running {
+        cursor: default;
+        pointer-events: none;
+      }
+
+      #launch-overlay.select-running {
+        cursor: default;
+        pointer-events: auto;
+      }
+
+      #launch-overlay.battle-loading {
+        cursor: default;
+        pointer-events: none;
+        background: #000;
+      }
+
+      #launch-card {
+        padding: 2rem;
+      }
+
+      #launch-overlay.intro-running #launch-card {
+        display: none;
+      }
+
+      #launch-overlay.select-running #launch-card {
+        display: none;
+      }
+
+      #launch-overlay.battle-loading #launch-card {
+        display: none;
+      }
+
+      #launch-title {
+        margin: 0 0 1rem;
+        font-size: clamp(3rem, 10vw, 7rem);
+        letter-spacing: 0.18em;
+        font-weight: 400;
+      }
+
+      #launch-action {
+        margin: 0;
+        font-size: clamp(1rem, 3vw, 1.45rem);
+        letter-spacing: 0.08em;
+        color: #cdbf9d;
+      }
+
+      #launch-status {
+        margin-top: 1rem;
+        min-height: 1.25rem;
+        color: #9f957d;
+        font: 0.9rem ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      #launch-intro-logo {
+        display: none;
+        width: min(70vw, 1000px);
+        max-height: 72vh;
+        object-fit: contain;
+        opacity: 0;
+      }
+
+      #launch-overlay.intro-running #launch-intro-logo {
+        display: block;
+        animation: studioIntro 5.8s linear forwards;
+      }
+
+      #launch-select {
+        display: none;
+        width: min(92vw, 760px);
+        padding: 2rem;
+        text-align: center;
+      }
+
+      #launch-overlay.select-running #launch-select {
+        display: block;
+      }
+
+      #launch-overlay.battle-loading #launch-select {
+        display: none;
+      }
+
+      #launch-battle-loading {
+        display: none;
+        color: #f1dfbd;
+        font-size: clamp(1.2rem, 4vw, 2rem);
+        letter-spacing: 0.14em;
+      }
+
+      #launch-overlay.battle-loading #launch-battle-loading {
+        display: block;
+      }
+
+      #launch-select h2 {
+        margin: 0 0 1.6rem;
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: 0.16em;
+        font-weight: 400;
+      }
+
+      #launch-choices {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .launch-choice {
+        border: 1px solid rgba(241, 223, 189, 0.3);
+        border-radius: 18px;
+        background: rgba(20, 16, 12, 0.76);
+        color: #d8c5a0;
+        padding: 1.4rem 1rem;
+        font: inherit;
+        font-size: clamp(1.4rem, 4vw, 2.4rem);
+        letter-spacing: 0.12em;
+      }
+
+      .launch-choice.selected {
+        border-color: #f1dfbd;
+        color: #fff2d4;
+        box-shadow: 0 0 36px rgba(241, 223, 189, 0.2);
+      }
+
+      #launch-select-help {
+        margin: 1.4rem 0 0;
+        color: #9f957d;
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        letter-spacing: 0.06em;
+      }
+
+      @keyframes studioIntro {
+        0% {
+          opacity: 0;
+        }
+        41.4% {
+          opacity: 1;
+        }
+        58.6% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="launch-overlay" role="button" aria-label="Start FFC Prototype" tabindex="0">
+      <div id="launch-card">
+        <h1 id="launch-title">FFC</h1>
+        <p id="launch-action">Click or press Enter to start</p>
+        <div id="launch-status"></div>
+      </div>
+      <img id="launch-intro-logo" src="./assets/ui/company_intro_credit.png" alt="Shoop Studio" />
+      <div id="launch-select">
+        <h2>SELECT A CHARACTER</h2>
+        <div id="launch-choices">
+          <button class="launch-choice selected" type="button" data-character="cat">CAT</button>
+          <button class="launch-choice" type="button" data-character="pig">PIG</button>
+        </div>
+        <p id="launch-select-help">Left/Right or Q/E choose  |  Enter start</p>
+      </div>
+      <div id="launch-battle-loading">LOADING BATTLE...</div>
+    </div>
+    <div id="game-shell">
+      <canvas id="bevy-canvas" tabindex="0"></canvas>
+    </div>
+    <script type="module">
+      import init from "./pkg/ffc_prototype.js?v=1779787343";
+
+      const canvas = document.getElementById("bevy-canvas");
+      const overlay = document.getElementById("launch-overlay");
+      const status = document.getElementById("launch-status");
+      const choices = Array.from(document.querySelectorAll(".launch-choice"));
+      const introAudio = new Audio("./assets/music/bgm/Desert_Teeth_intro_non_commercial.mp3");
+      const battleAudio = new Audio("./assets/music/bgm/arena_arcade_battle_song.mp3");
+      introAudio.loop = true;
+      battleAudio.loop = true;
+      let selectedCharacter = "cat";
+      let started = false;
+      let battleReadyPoll = null;
+
+      function updateSelectedCharacter(character) {
+        selectedCharacter = character;
+        for (const choice of choices) {
+          choice.classList.toggle("selected", choice.dataset.character === selectedCharacter);
+        }
+      }
+
+      function toggleSelectedCharacter() {
+        updateSelectedCharacter(selectedCharacter === "cat" ? "pig" : "cat");
+      }
+
+      function showCharacterSelect() {
+        overlay.classList.remove("intro-running");
+        overlay.classList.add("select-running");
+        updateSelectedCharacter(selectedCharacter);
+      }
+
+      function startSelectedBattle() {
+        if (!overlay.classList.contains("select-running")) {
+          return;
+        }
+        window.__ffcCharacterChoice = selectedCharacter;
+        window.__ffcBattleStatus = "loading";
+        introAudio.pause();
+        overlay.classList.remove("select-running");
+        overlay.classList.add("battle-loading");
+        waitForBattleReady();
+      }
+
+      function waitForBattleReady() {
+        if (battleReadyPoll !== null) {
+          window.clearInterval(battleReadyPoll);
+        }
+        const startedWaitingAt = performance.now();
+        battleReadyPoll = window.setInterval(() => {
+          if (window.__ffcBattleStatus === "ready") {
+            window.clearInterval(battleReadyPoll);
+            battleReadyPoll = null;
+            battleAudio.currentTime = 0;
+            battleAudio.play().catch((error) => {
+              console.warn("Battle audio was blocked by the browser.", error);
+            });
+            overlay.classList.add("hidden");
+            canvas?.focus();
+            return;
+          }
+          if (performance.now() - startedWaitingAt > 12000) {
+            const loading = document.getElementById("launch-battle-loading");
+            if (loading) {
+              loading.textContent = "STILL LOADING BATTLE...";
+            }
+          }
+        }, 100);
+      }
+
+      function showRuntimeError(message) {
+        console.error(message);
+        overlay.classList.remove("hidden", "intro-running", "select-running", "battle-loading");
+        status.textContent = message;
+        canvas?.focus();
+      }
+
+      async function startGame() {
+        if (started) {
+          return;
+        }
+        started = true;
+        status.textContent = "Starting engine...";
+        try {
+          introAudio.currentTime = 10.5;
+          introAudio.play().catch((error) => {
+            console.warn("Intro audio was blocked by the browser.", error);
+          });
+          await init();
+          status.textContent = "";
+          overlay.classList.add("intro-running");
+          window.setTimeout(showCharacterSelect, 6100);
+        } catch (error) {
+          console.error(error);
+          overlay.classList.remove("intro-running");
+          status.textContent = "Failed to start. Open the browser console for details.";
+          started = false;
+        }
+      }
+
+      window.addEventListener("error", (event) => {
+        showRuntimeError(`Runtime error: ${event.message}`);
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        showRuntimeError("Runtime error. Open the browser console for details.");
+        console.error(event.reason);
+      });
+
+      for (const choice of choices) {
+        choice.addEventListener("click", () => {
+          updateSelectedCharacter(choice.dataset.character);
+          startSelectedBattle();
+        });
+      }
+
+      overlay.addEventListener("click", startGame);
+      window.addEventListener("keydown", (event) => {
+        if (overlay.classList.contains("select-running")) {
+          if (
+            event.key === "ArrowLeft" ||
+            event.key === "ArrowRight" ||
+            event.key.toLowerCase() === "q" ||
+            event.key.toLowerCase() === "e"
+          ) {
+            event.preventDefault();
+            toggleSelectedCharacter();
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            startSelectedBattle();
+            return;
+          }
+        }
+
+        if (!started && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          startGame();
+        }
+      });
+    </script>
+  </body>
+</html>
