@@ -53,31 +53,36 @@
         pointer-events: none;
       }
 
-      #launch-overlay.select-running {
+      #launch-overlay.mode-running,
+      #launch-overlay.select-running,
+      #launch-overlay.keys-running,
+      #launch-overlay.battle-loading {
         cursor: default;
         pointer-events: auto;
       }
 
-      #launch-overlay.battle-loading {
-        cursor: default;
-        pointer-events: none;
+      #launch-overlay.battle-loading,
+      #launch-overlay.keys-running,
+      #launch-overlay.mode-running,
+      #launch-overlay.select-running {
         background: #000;
+      }
+
+      #launch-card,
+      #launch-intro-logo,
+      #launch-mode,
+      #launch-select,
+      #launch-keys,
+      #launch-battle-loading {
+        display: none;
       }
 
       #launch-card {
         padding: 2rem;
       }
 
-      #launch-overlay.intro-running #launch-card {
-        display: none;
-      }
-
-      #launch-overlay.select-running #launch-card {
-        display: none;
-      }
-
-      #launch-overlay.battle-loading #launch-card {
-        display: none;
+      #launch-overlay:not(.intro-running):not(.mode-running):not(.select-running):not(.keys-running):not(.battle-loading) #launch-card {
+        display: block;
       }
 
       #launch-title {
@@ -102,7 +107,6 @@
       }
 
       #launch-intro-logo {
-        display: none;
         width: min(70vw, 1000px);
         max-height: 72vh;
         object-fit: contain;
@@ -114,81 +118,186 @@
         animation: studioIntro 5.8s linear forwards;
       }
 
-      #launch-select {
-        display: none;
-        width: min(92vw, 760px);
+      #launch-mode,
+      #launch-select,
+      #launch-keys {
+        width: min(92vw, 860px);
         padding: 2rem;
-        text-align: center;
       }
 
-      #launch-overlay.select-running #launch-select {
-        display: block;
-      }
-
-      #launch-overlay.battle-loading #launch-select {
-        display: none;
-      }
-
-      #launch-battle-loading {
-        display: none;
-        color: #f1dfbd;
-        font-size: clamp(1.2rem, 4vw, 2rem);
-        letter-spacing: 0.14em;
-      }
-
+      #launch-overlay.mode-running #launch-mode,
+      #launch-overlay.select-running #launch-select,
+      #launch-overlay.keys-running #launch-keys,
       #launch-overlay.battle-loading #launch-battle-loading {
         display: block;
       }
 
-      #launch-select h2 {
+      .launch-heading {
         margin: 0 0 1.6rem;
         font-size: clamp(2rem, 6vw, 4rem);
         letter-spacing: 0.16em;
         font-weight: 400;
       }
 
-      #launch-choices {
+      .choice-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
       }
 
-      .launch-choice {
+      #mode-choices {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .launch-choice,
+      .mode-choice,
+      .key-row,
+      .small-button {
         border: 1px solid rgba(241, 223, 189, 0.3);
         border-radius: 18px;
         background: rgba(20, 16, 12, 0.76);
         color: #d8c5a0;
-        padding: 1.4rem 1rem;
+        padding: 1.1rem 1rem;
         font: inherit;
-        font-size: clamp(1.4rem, 4vw, 2.4rem);
-        letter-spacing: 0.12em;
+        letter-spacing: 0.1em;
       }
 
+      .launch-choice,
+      .mode-choice {
+        font-size: clamp(1.2rem, 3.2vw, 2.1rem);
+      }
+
+      .mode-choice.selected,
       .launch-choice.selected {
         border-color: #f1dfbd;
         color: #fff2d4;
         box-shadow: 0 0 36px rgba(241, 223, 189, 0.2);
       }
 
-      #launch-select-help {
+      .launch-choice.p1-selected {
+        border-color: #ffcf70;
+        box-shadow: 0 0 42px rgba(255, 164, 63, 0.28);
+        transform: scale(1.04);
+      }
+
+      .launch-choice.p2-selected {
+        border-color: #6bd7ff;
+        box-shadow: 0 0 42px rgba(79, 190, 255, 0.28);
+        transform: scale(0.98);
+      }
+
+      .help-text {
         margin: 1.4rem 0 0;
         color: #9f957d;
-        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-size: clamp(0.86rem, 2.2vw, 1.05rem);
         letter-spacing: 0.06em;
       }
 
+      #select-player-label {
+        margin: 0 0 1rem;
+        color: #e7d5ad;
+        font-size: clamp(1rem, 3vw, 1.35rem);
+        letter-spacing: 0.16em;
+      }
+
+      #key-table {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.7rem 1rem;
+        text-align: left;
+      }
+
+      .key-column h3 {
+        margin: 0 0 0.6rem;
+        color: #f1dfbd;
+        letter-spacing: 0.12em;
+        font-weight: 400;
+        text-align: center;
+      }
+
+      .key-row {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0.35rem 0;
+        font-size: 1rem;
+      }
+
+      .key-row.capture {
+        border-color: #ffcf70;
+        color: #fff2d4;
+      }
+
+      .small-button {
+        margin: 1.1rem 0.4rem 0;
+        padding: 0.75rem 1.1rem;
+      }
+
+      #launch-battle-loading {
+        color: #f1dfbd;
+        width: min(92vw, 940px);
+        padding: 2rem;
+      }
+
+      #battle-loading-status {
+        margin: 0 0 1rem;
+        color: #cdbf9d;
+        font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+        letter-spacing: 0.14em;
+      }
+
+      #battle-control-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+
+      #battle-control-grid.two-player {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .battle-control-card {
+        border: 1px solid rgba(241, 223, 189, 0.28);
+        background: rgba(20, 16, 12, 0.72);
+        padding: 1rem;
+        text-align: left;
+      }
+
+      .battle-control-card h3 {
+        margin: 0 0 0.75rem;
+        color: #f1dfbd;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+      }
+
+      .battle-control-card p {
+        margin: 0.4rem 0;
+        color: #d8c5a0;
+        font-size: clamp(0.92rem, 2vw, 1.05rem);
+        letter-spacing: 0.04em;
+      }
+
+      #battle-start-help {
+        margin: 1.35rem 0 0;
+        color: #fff2d4;
+        font-size: clamp(1rem, 2.6vw, 1.32rem);
+        letter-spacing: 0.1em;
+      }
+
       @keyframes studioIntro {
-        0% {
-          opacity: 0;
-        }
-        41.4% {
-          opacity: 1;
-        }
-        58.6% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
+        0% { opacity: 0; }
+        41.4% { opacity: 1; }
+        58.6% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @media (max-width: 720px) {
+        #mode-choices,
+        #key-table,
+        #battle-control-grid.two-player {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -201,61 +310,376 @@
         <div id="launch-status"></div>
       </div>
       <img id="launch-intro-logo" src="./assets/ui/company_intro_credit.png" alt="Shoop Studio" />
+      <div id="launch-mode">
+        <h2 class="launch-heading">PLAY MODE</h2>
+        <div id="mode-choices" class="choice-grid">
+          <button class="mode-choice selected" type="button" data-mode="single">SINGLE PLAYER</button>
+          <button class="mode-choice" type="button" data-mode="two">TWO PLAYERS</button>
+          <button class="mode-choice" type="button" data-mode="keys">KEY SETTINGS</button>
+        </div>
+        <p class="help-text">Left/Right or Q/E choose  |  Enter confirm</p>
+      </div>
       <div id="launch-select">
-        <h2>SELECT A CHARACTER</h2>
-        <div id="launch-choices">
-          <button class="launch-choice selected" type="button" data-character="cat">CAT</button>
+        <h2 class="launch-heading">SELECT A CHARACTER</h2>
+        <p id="select-player-label">P1 CHOOSE</p>
+        <div id="launch-choices" class="choice-grid">
+          <button class="launch-choice selected p1-selected" type="button" data-character="cat">CAT</button>
           <button class="launch-choice" type="button" data-character="pig">PIG</button>
         </div>
-        <p id="launch-select-help">Left/Right or Q/E choose  |  Enter start</p>
+        <p id="launch-select-help" class="help-text">Left/Right or Q/E choose  |  Enter confirm</p>
       </div>
-      <div id="launch-battle-loading">LOADING BATTLE...</div>
+      <div id="launch-keys">
+        <h2 class="launch-heading">KEY SETTINGS</h2>
+        <div id="key-table"></div>
+        <button id="reset-keys" class="small-button" type="button">RESET DEFAULTS</button>
+        <button id="back-to-mode" class="small-button" type="button">BACK</button>
+        <p id="key-help" class="help-text">Click a key row, then press a replacement key. Action order is Aim, Heavy, Light, Jump.</p>
+      </div>
+      <div id="launch-battle-loading">
+        <h2 class="launch-heading">PC KEYBOARD GAME</h2>
+        <p id="battle-loading-status">LOADING BATTLE...</p>
+        <div id="battle-control-grid"></div>
+        <p id="battle-start-help">Loading battle...</p>
+      </div>
     </div>
     <div id="game-shell">
       <canvas id="bevy-canvas" tabindex="0"></canvas>
     </div>
     <script type="module">
-      import init from "./pkg/ffc_prototype.js?v=1779787343";
+      import init from "./pkg/ffc_prototype.js?v=1779959530";
 
       const canvas = document.getElementById("bevy-canvas");
       const overlay = document.getElementById("launch-overlay");
       const status = document.getElementById("launch-status");
-      const choices = Array.from(document.querySelectorAll(".launch-choice"));
+      const modeChoices = Array.from(document.querySelectorAll(".mode-choice"));
+      const characterChoices = Array.from(document.querySelectorAll(".launch-choice"));
+      const selectPlayerLabel = document.getElementById("select-player-label");
+      const keyTable = document.getElementById("key-table");
+      const keyHelp = document.getElementById("key-help");
+      const resetKeysButton = document.getElementById("reset-keys");
+      const backToModeButton = document.getElementById("back-to-mode");
+      const battleLoadingStatus = document.getElementById("battle-loading-status");
+      const battleControlGrid = document.getElementById("battle-control-grid");
+      const battleStartHelp = document.getElementById("battle-start-help");
       const introAudio = new Audio("./assets/music/bgm/Desert_Teeth_intro_non_commercial.mp3");
       const battleAudio = new Audio("./assets/music/bgm/arena_arcade_battle_song.mp3");
+      const STORAGE_KEY = "ffc.controls.v1";
+      const BATTLE_READY_FALLBACK_MS = 5000;
+      const BATTLE_START_FALLBACK_MS = 2500;
+      const modeOrder = ["single", "two", "keys"];
+      const actionOrder = ["aimGrab", "heavy", "light", "jump"];
+      const allActions = ["left", "right", "up", "down", "aimGrab", "heavy", "light", "jump"];
+      const actionLabels = {
+        left: "Left",
+        right: "Right",
+        up: "Up",
+        down: "Down",
+        aimGrab: "Aim",
+        heavy: "Heavy",
+        light: "Light",
+        jump: "Jump",
+      };
+      const defaultBindings = {
+        p1: {
+          left: "ArrowLeft",
+          right: "ArrowRight",
+          up: "ArrowUp",
+          down: "ArrowDown",
+          aimGrab: "KeyZ",
+          heavy: "KeyX",
+          light: "KeyC",
+          jump: "KeyV",
+        },
+        p2: {
+          left: "KeyA",
+          right: "KeyD",
+          up: "KeyW",
+          down: "KeyS",
+          aimGrab: "KeyT",
+          heavy: "KeyY",
+          light: "KeyU",
+          jump: "KeyI",
+        },
+      };
+      const reservedCodes = new Set([
+        "Escape",
+        "Enter",
+        "Tab",
+        "ShiftLeft",
+        "ShiftRight",
+        "ControlLeft",
+        "ControlRight",
+        "AltLeft",
+        "AltRight",
+        "MetaLeft",
+        "MetaRight",
+      ]);
+
       introAudio.loop = true;
       battleAudio.loop = true;
-      let selectedCharacter = "cat";
       let started = false;
       let battleReadyPoll = null;
+      let selectedMode = "single";
+      let selectedCharacter = "cat";
+      let p1Character = "cat";
+      let p2Character = "pig";
+      let selectingPlayer = 1;
+      let bindings = loadBindings();
+      let captureTarget = null;
+      let battleBriefingReady = false;
+      let battleStartConfirmed = false;
+      let battleStartConfirmedAt = 0;
+
+      function cloneBindings(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function normalizeBindings(value) {
+        const next = cloneBindings(defaultBindings);
+        for (const player of ["p1", "p2"]) {
+          for (const action of allActions) {
+            if (typeof value?.[player]?.[action] === "string") {
+              next[player][action] = value[player][action];
+            }
+          }
+        }
+        return hasDuplicateBindings(next) ? cloneBindings(defaultBindings) : next;
+      }
+
+      function loadBindings() {
+        try {
+          return normalizeBindings(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+        } catch (_) {
+          return cloneBindings(defaultBindings);
+        }
+      }
+
+      function saveBindings() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(bindings));
+      }
+
+      function allBoundCodes(value = bindings) {
+        return ["p1", "p2"].flatMap((player) => allActions.map((action) => value[player][action]));
+      }
+
+      function hasDuplicateBindings(value = bindings) {
+        const codes = allBoundCodes(value);
+        return new Set(codes).size !== codes.length;
+      }
+
+      function codeLabel(code) {
+        if (code.startsWith("Key")) return code.slice(3);
+        if (code.startsWith("Digit")) return code.slice(5);
+        return code.replace("Arrow", "");
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function oppositeCharacter(character) {
+        return character === "cat" ? "pig" : "cat";
+      }
+
+      function setOverlayScreen(screen) {
+        overlay.classList.remove("intro-running", "mode-running", "select-running", "keys-running", "battle-loading", "hidden");
+        if (screen) overlay.classList.add(screen);
+      }
+
+      function updateModeChoice(mode) {
+        selectedMode = mode;
+        for (const choice of modeChoices) {
+          choice.classList.toggle("selected", choice.dataset.mode === selectedMode);
+        }
+      }
+
+      function showModeSelect() {
+        captureTarget = null;
+        setOverlayScreen("mode-running");
+        updateModeChoice(selectedMode === "keys" ? "single" : selectedMode);
+      }
 
       function updateSelectedCharacter(character) {
         selectedCharacter = character;
-        for (const choice of choices) {
-          choice.classList.toggle("selected", choice.dataset.character === selectedCharacter);
+        for (const choice of characterChoices) {
+          const selected = choice.dataset.character === selectedCharacter;
+          choice.classList.toggle("selected", selected);
+          choice.classList.toggle("p1-selected", selected && selectingPlayer === 1);
+          choice.classList.toggle("p2-selected", selected && selectingPlayer === 2);
         }
+      }
+
+      function showCharacterSelect() {
+        selectingPlayer = 1;
+        selectedCharacter = p1Character;
+        selectPlayerLabel.textContent = selectedMode === "two" ? "P1 CHOOSE" : "CHOOSE YOUR FIGHTER";
+        setOverlayScreen("select-running");
+        updateSelectedCharacter(selectedCharacter);
       }
 
       function toggleSelectedCharacter() {
         updateSelectedCharacter(selectedCharacter === "cat" ? "pig" : "cat");
       }
 
-      function showCharacterSelect() {
-        overlay.classList.remove("intro-running");
-        overlay.classList.add("select-running");
-        updateSelectedCharacter(selectedCharacter);
+      function confirmCharacterSelection() {
+        if (!overlay.classList.contains("select-running")) return;
+        if (selectingPlayer === 1) {
+          p1Character = selectedCharacter;
+          if (selectedMode === "two") {
+            selectingPlayer = 2;
+            selectedCharacter = p2Character;
+            selectPlayerLabel.textContent = "P2 CHOOSE";
+            updateSelectedCharacter(selectedCharacter);
+            return;
+          }
+          p2Character = oppositeCharacter(p1Character);
+        } else {
+          p2Character = selectedCharacter;
+        }
+        startSelectedBattle();
+      }
+
+      function renderKeySettings() {
+        keyTable.innerHTML = "";
+        for (const player of ["p1", "p2"]) {
+          const column = document.createElement("div");
+          column.className = "key-column";
+          const heading = document.createElement("h3");
+          heading.textContent = player.toUpperCase();
+          column.appendChild(heading);
+          for (const action of ["left", "right", "up", "down", ...actionOrder]) {
+            const button = document.createElement("button");
+            button.className = "key-row";
+            button.type = "button";
+            button.dataset.player = player;
+            button.dataset.action = action;
+            button.innerHTML = `<span>${actionLabels[action]}</span><strong>${codeLabel(bindings[player][action])}</strong>`;
+            if (captureTarget?.player === player && captureTarget?.action === action) {
+              button.classList.add("capture");
+            }
+            button.addEventListener("click", (event) => {
+              event.stopPropagation();
+              captureTarget = { player, action };
+              keyHelp.textContent = `Press a new key for ${player.toUpperCase()} ${actionLabels[action]}.`;
+              renderKeySettings();
+            });
+            column.appendChild(button);
+          }
+          keyTable.appendChild(column);
+        }
+      }
+
+      function showKeySettings() {
+        setOverlayScreen("keys-running");
+        captureTarget = null;
+        keyHelp.textContent = "Click a key row, then press a replacement key. Action order is Aim, Heavy, Light, Jump.";
+        renderKeySettings();
+      }
+
+      function playerControlsMarkup(playerKey, label) {
+        const b = bindings[playerKey];
+        const guard = `${codeLabel(b.heavy)} + ${codeLabel(b.light)}`;
+        return `
+          <section class="battle-control-card">
+            <h3>${escapeHtml(label)}</h3>
+            <p>Move: ${escapeHtml(codeLabel(b.left))}/${escapeHtml(codeLabel(b.right))}/${escapeHtml(codeLabel(b.up))}/${escapeHtml(codeLabel(b.down))}</p>
+            <p>Aim: ${escapeHtml(codeLabel(b.aimGrab))}</p>
+            <p>Heavy / Throw: ${escapeHtml(codeLabel(b.heavy))}</p>
+            <p>Light / Pickup / Item: ${escapeHtml(codeLabel(b.light))}</p>
+            <p>Jump: ${escapeHtml(codeLabel(b.jump))}</p>
+            <p>Guard: ${escapeHtml(guard)}</p>
+            <p>Dash: double-tap movement</p>
+          </section>
+        `;
+      }
+
+      function renderBattleBriefing(state = "loading") {
+        const ready = state === "ready";
+        const starting = state === "starting";
+        battleControlGrid.classList.toggle("two-player", selectedMode === "two");
+        battleControlGrid.innerHTML = selectedMode === "two"
+          ? `${playerControlsMarkup("p1", "P1")}${playerControlsMarkup("p2", "P2")}`
+          : playerControlsMarkup("p1", "P1 - Defeat the bot");
+        battleLoadingStatus.textContent = starting
+          ? "STARTING FIGHT..."
+          : ready
+            ? "BATTLE LOADED"
+            : "LOADING BATTLE...";
+        battleStartHelp.textContent = starting
+          ? "Starting..."
+          : ready
+            ? "Press Enter or click to fight"
+            : "Loading battle...";
+      }
+
+      function applyCapturedKey(code) {
+        if (!captureTarget) return false;
+        if (reservedCodes.has(code)) {
+          keyHelp.textContent = "That key is reserved.";
+          return true;
+        }
+        const current = bindings[captureTarget.player][captureTarget.action];
+        const duplicate = allBoundCodes().some((bound) => bound === code && bound !== current);
+        if (duplicate) {
+          keyHelp.textContent = "That key is already used.";
+          return true;
+        }
+        bindings[captureTarget.player][captureTarget.action] = code;
+        saveBindings();
+        captureTarget = null;
+        keyHelp.textContent = "Saved.";
+        renderKeySettings();
+        return true;
       }
 
       function startSelectedBattle() {
-        if (!overlay.classList.contains("select-running")) {
-          return;
-        }
-        window.__ffcCharacterChoice = selectedCharacter;
+        window.__ffcMatchConfig = {
+          mode: selectedMode,
+          p1Character,
+          p2Character: selectedMode === "two" ? p2Character : oppositeCharacter(p1Character),
+          bindings,
+        };
+        window.__ffcStartBattle = false;
         window.__ffcBattleStatus = "loading";
+        battleBriefingReady = false;
+        battleStartConfirmed = false;
+        battleStartConfirmedAt = 0;
         introAudio.pause();
-        overlay.classList.remove("select-running");
-        overlay.classList.add("battle-loading");
+        setOverlayScreen("battle-loading");
+        renderBattleBriefing("loading");
         waitForBattleReady();
+      }
+
+      function finishBattleLaunch() {
+        if (battleReadyPoll !== null) {
+          window.clearInterval(battleReadyPoll);
+          battleReadyPoll = null;
+        }
+        battleAudio.currentTime = 0;
+        battleAudio.play().catch((error) => {
+          console.warn("Battle audio was blocked by the browser.", error);
+        });
+        overlay.classList.add("hidden");
+        canvas?.focus();
+      }
+
+      function confirmBattleStart() {
+        if (!overlay.classList.contains("battle-loading")) return false;
+        if (!battleBriefingReady) {
+          renderBattleBriefing("loading");
+          return true;
+        }
+        if (battleStartConfirmed) return true;
+        battleStartConfirmed = true;
+        battleStartConfirmedAt = performance.now();
+        window.__ffcStartBattle = true;
+        renderBattleBriefing("starting");
+        return true;
       }
 
       function waitForBattleReady() {
@@ -264,21 +688,37 @@
         }
         const startedWaitingAt = performance.now();
         battleReadyPoll = window.setInterval(() => {
+          if (window.__ffcBattleStatus === "briefing_ready" && !battleStartConfirmed) {
+            battleBriefingReady = true;
+            renderBattleBriefing("ready");
+            return;
+          }
           if (window.__ffcBattleStatus === "ready") {
-            window.clearInterval(battleReadyPoll);
-            battleReadyPoll = null;
-            battleAudio.currentTime = 0;
-            battleAudio.play().catch((error) => {
-              console.warn("Battle audio was blocked by the browser.", error);
-            });
-            overlay.classList.add("hidden");
-            canvas?.focus();
+            finishBattleLaunch();
+            return;
+          }
+          if (
+            !battleBriefingReady &&
+            !battleStartConfirmed &&
+            !window.__ffcMatchConfig &&
+            performance.now() - startedWaitingAt > BATTLE_READY_FALLBACK_MS
+          ) {
+            battleBriefingReady = true;
+            renderBattleBriefing("ready");
+            return;
+          }
+          if (
+            battleStartConfirmed &&
+            performance.now() - battleStartConfirmedAt > BATTLE_START_FALLBACK_MS
+          ) {
+            finishBattleLaunch();
             return;
           }
           if (performance.now() - startedWaitingAt > 12000) {
-            const loading = document.getElementById("launch-battle-loading");
-            if (loading) {
-              loading.textContent = "STILL LOADING BATTLE...";
+            if (!battleBriefingReady && !battleStartConfirmed) {
+              battleLoadingStatus.textContent = window.__ffcMatchConfig
+                ? "LOADING ENGINE..."
+                : "STILL LOADING BATTLE...";
             }
           }
         }, 100);
@@ -286,15 +726,13 @@
 
       function showRuntimeError(message) {
         console.error(message);
-        overlay.classList.remove("hidden", "intro-running", "select-running", "battle-loading");
+        setOverlayScreen(null);
         status.textContent = message;
         canvas?.focus();
       }
 
       async function startGame() {
-        if (started) {
-          return;
-        }
+        if (started) return;
         started = true;
         status.textContent = "Starting engine...";
         try {
@@ -304,34 +742,100 @@
           });
           await init();
           status.textContent = "";
-          overlay.classList.add("intro-running");
-          window.setTimeout(showCharacterSelect, 6100);
+          setOverlayScreen("intro-running");
+          window.setTimeout(showModeSelect, 6100);
         } catch (error) {
           console.error(error);
-          overlay.classList.remove("intro-running");
+          setOverlayScreen(null);
           status.textContent = "Failed to start. Open the browser console for details.";
           started = false;
         }
       }
 
-      window.addEventListener("error", (event) => {
-        showRuntimeError(`Runtime error: ${event.message}`);
-      });
+      function handleOverlayClick(event) {
+        if (overlay.classList.contains("battle-loading")) {
+          if (confirmBattleStart()) event.preventDefault();
+          return;
+        }
+        startGame();
+      }
 
-      window.addEventListener("unhandledrejection", (event) => {
-        showRuntimeError("Runtime error. Open the browser console for details.");
-        console.error(event.reason);
-      });
-
-      for (const choice of choices) {
-        choice.addEventListener("click", () => {
-          updateSelectedCharacter(choice.dataset.character);
-          startSelectedBattle();
+      for (const choice of modeChoices) {
+        choice.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (choice.dataset.mode === "keys") {
+            showKeySettings();
+            return;
+          }
+          updateModeChoice(choice.dataset.mode);
+          showCharacterSelect();
         });
       }
 
-      overlay.addEventListener("click", startGame);
+      for (const choice of characterChoices) {
+        choice.addEventListener("click", (event) => {
+          event.stopPropagation();
+          updateSelectedCharacter(choice.dataset.character);
+          confirmCharacterSelection();
+        });
+      }
+
+      resetKeysButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        bindings = cloneBindings(defaultBindings);
+        saveBindings();
+        captureTarget = null;
+        renderKeySettings();
+        keyHelp.textContent = "Defaults restored.";
+      });
+
+      backToModeButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        showModeSelect();
+      });
+      overlay.addEventListener("click", handleOverlayClick);
+
       window.addEventListener("keydown", (event) => {
+        if (overlay.classList.contains("battle-loading")) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            confirmBattleStart();
+          }
+          return;
+        }
+
+        if (overlay.classList.contains("keys-running")) {
+          if (applyCapturedKey(event.code)) {
+            event.preventDefault();
+            return;
+          }
+          if (event.key === "Escape") {
+            event.preventDefault();
+            showModeSelect();
+            return;
+          }
+        }
+
+        if (overlay.classList.contains("mode-running")) {
+          const current = modeOrder.indexOf(selectedMode);
+          if (event.key === "ArrowLeft" || event.key.toLowerCase() === "q") {
+            event.preventDefault();
+            updateModeChoice(modeOrder[(current + modeOrder.length - 1) % modeOrder.length]);
+            return;
+          }
+          if (event.key === "ArrowRight" || event.key.toLowerCase() === "e") {
+            event.preventDefault();
+            updateModeChoice(modeOrder[(current + 1) % modeOrder.length]);
+            return;
+          }
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (selectedMode === "keys") showKeySettings();
+            else showCharacterSelect();
+            return;
+          }
+        }
+
         if (overlay.classList.contains("select-running")) {
           if (
             event.key === "ArrowLeft" ||
@@ -345,7 +849,7 @@
           }
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            startSelectedBattle();
+            confirmCharacterSelection();
             return;
           }
         }
@@ -354,6 +858,15 @@
           event.preventDefault();
           startGame();
         }
+      });
+
+      window.addEventListener("error", (event) => {
+        showRuntimeError(`Runtime error: ${event.message}`);
+      });
+
+      window.addEventListener("unhandledrejection", (event) => {
+        showRuntimeError("Runtime error. Open the browser console for details.");
+        console.error(event.reason);
       });
     </script>
   </body>
