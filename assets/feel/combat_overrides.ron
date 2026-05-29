@@ -1,4 +1,5 @@
 (
+    hit_effects_enabled: false,
     reactions: [
         (
             id: ShortStandingStagger,
@@ -62,6 +63,37 @@
             hitstop_scale: Some(1.22),
             shake_scale: Some(1.2),
         ),
+    ],
+    hit_effects: [
+        (character: Cat, technique: CatLight1, payload: AsBeat1, effect: GenericLight),
+        (character: Cat, technique: CatLight2, payload: AssBeat1, effect: GenericLight),
+        (character: Cat, technique: CatHeavy, payload: HeavyStep, effect: LauncherCyan),
+        (character: Cat, technique: CatHeavy2, payload: KiriageBeat1, effect: LauncherCyan),
+        (character: Cat, technique: CatHeavy2, payload: KiriageBeat2, effect: LauncherCyan),
+        (character: Cat, technique: CatComboFinisher, payload: ComboFinisher, effect: GroundBounceOrange),
+        (character: Cat, technique: CatDashComboFinisher, payload: DashComboFinisher, effect: GroundBounceOrange),
+        (character: Cat, technique: CatDashAttack, payload: DashStrike, effect: GenericHeavy),
+        (character: Cat, technique: CatDashAttack, payload: DashShoulderBeat, effect: GenericHeavy),
+        (character: Cat, technique: CatJumpAttack, payload: JumpSpike, effect: GenericHeavy),
+        (character: Cat, technique: CatJumpHeavy, payload: JumpFishShot, effect: LauncherCyan),
+        (character: Cat, technique: CatUltimateStartup, payload: UltimateCatch, effect: UltimateSlashRed),
+        (character: Cat, technique: CatUltimateRush, payload: UltimateScratchLight, effect: UltimateSlashRed),
+        (character: Cat, technique: CatUltimateRush, payload: UltimateScratchHeavy, effect: UltimateSlashRed),
+        (character: Cat, technique: CatUltimateRush, payload: UltimateBomb, effect: UltimateBombRed),
+        (character: Pig, technique: PigLight1, payload: AsBeat1, effect: LightBlue),
+        (character: Pig, technique: PigLight2, payload: AssBeat1, effect: LightBlue),
+        (character: Pig, technique: PigComboFinisher, payload: PigHamSlam, effect: PigHamSlamHeart),
+        (character: Pig, technique: PigHeavy, payload: PigHamSwingTap, effect: PigHamSwing),
+        (character: Pig, technique: PigHeavy, payload: PigHamSwingPartial, effect: PigHamSwing),
+        (character: Pig, technique: PigHeavy, payload: PigHamSwingFull, effect: PigHamSwing),
+        (character: Pig, technique: PigDashAttack, payload: DashStrike, effect: GenericHeavy),
+        (character: Pig, technique: PigDashAttack, payload: DashShoulderBeat, effect: GenericHeavy),
+        (character: Pig, technique: PigJumpAttack, payload: JumpSpike, effect: LightBlue),
+        (character: Pig, technique: PigJumpHeavy, payload: PigAirMeatSlam, effect: PigAirMeatSlam),
+        (character: Pig, technique: PigUltimateStartup, payload: PigUltimateCatch, effect: PigHamSwing),
+        (character: Pig, technique: PigUltimateRush, payload: PigUltimateScratchLight, effect: PigHamSwing),
+        (character: Pig, technique: PigUltimateRush, payload: PigUltimateScratchHeavy, effect: PigHamSwing),
+        (character: Pig, technique: PigUltimateRush, payload: PigUltimateBomb, effect: UltimateBombRed),
     ],
     techniques: [
         (

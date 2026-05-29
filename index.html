@@ -48,11 +48,6 @@
         display: none;
       }
 
-      #launch-overlay.intro-running {
-        cursor: default;
-        pointer-events: none;
-      }
-
       #launch-overlay.mode-running,
       #launch-overlay.select-running,
       #launch-overlay.keys-running,
@@ -69,7 +64,6 @@
       }
 
       #launch-card,
-      #launch-intro-logo,
       #launch-mode,
       #launch-select,
       #launch-keys,
@@ -81,7 +75,7 @@
         padding: 2rem;
       }
 
-      #launch-overlay:not(.intro-running):not(.mode-running):not(.select-running):not(.keys-running):not(.battle-loading) #launch-card {
+      #launch-overlay:not(.mode-running):not(.select-running):not(.keys-running):not(.battle-loading) #launch-card {
         display: block;
       }
 
@@ -104,18 +98,6 @@
         min-height: 1.25rem;
         color: #9f957d;
         font: 0.9rem ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-
-      #launch-intro-logo {
-        width: min(70vw, 1000px);
-        max-height: 72vh;
-        object-fit: contain;
-        opacity: 0;
-      }
-
-      #launch-overlay.intro-running #launch-intro-logo {
-        display: block;
-        animation: studioIntro 5.8s linear forwards;
       }
 
       #launch-mode,
@@ -286,13 +268,6 @@
         letter-spacing: 0.1em;
       }
 
-      @keyframes studioIntro {
-        0% { opacity: 0; }
-        41.4% { opacity: 1; }
-        58.6% { opacity: 1; }
-        100% { opacity: 0; }
-      }
-
       @media (max-width: 720px) {
         #mode-choices,
         #key-table,
@@ -309,7 +284,6 @@
         <p id="launch-action">Click or press Enter to start</p>
         <div id="launch-status"></div>
       </div>
-      <img id="launch-intro-logo" src="./assets/ui/company_intro_credit.png" alt="Shoop Studio" />
       <div id="launch-mode">
         <h2 class="launch-heading">PLAY MODE</h2>
         <div id="mode-choices" class="choice-grid">
@@ -346,7 +320,7 @@
       <canvas id="bevy-canvas" tabindex="0"></canvas>
     </div>
     <script type="module">
-      import init from "./pkg/ffc_prototype.js?v=1779960960";
+      import init from "./pkg/ffc_prototype.js?v=1780017236";
 
       const canvas = document.getElementById("bevy-canvas");
       const overlay = document.getElementById("launch-overlay");
@@ -361,7 +335,7 @@
       const battleLoadingStatus = document.getElementById("battle-loading-status");
       const battleControlGrid = document.getElementById("battle-control-grid");
       const battleStartHelp = document.getElementById("battle-start-help");
-      const introAudio = new Audio("./assets/music/bgm/Desert_Teeth_intro_non_commercial.mp3");
+      const menuAudio = new Audio("./assets/music/bgm/Desert_Teeth_intro_non_commercial.mp3");
       const battleAudio = new Audio("./assets/music/bgm/arena_arcade_battle_song.mp3");
       const STORAGE_KEY = "ffc.controls.v1";
       const BATTLE_READY_FALLBACK_MS = 5000;
@@ -415,7 +389,7 @@
         "MetaRight",
       ]);
 
-      introAudio.loop = true;
+      menuAudio.loop = true;
       battleAudio.loop = true;
       let started = false;
       let battleReadyPoll = null;
@@ -487,7 +461,7 @@
       }
 
       function setOverlayScreen(screen) {
-        overlay.classList.remove("intro-running", "mode-running", "select-running", "keys-running", "battle-loading", "hidden");
+        overlay.classList.remove("mode-running", "select-running", "keys-running", "battle-loading", "hidden");
         if (screen) overlay.classList.add(screen);
       }
 
@@ -649,7 +623,7 @@
         battleBriefingReady = false;
         battleStartConfirmed = false;
         battleStartConfirmedAt = 0;
-        introAudio.pause();
+        menuAudio.pause();
         setOverlayScreen("battle-loading");
         renderBattleBriefing("loading");
         waitForBattleReady();
@@ -736,14 +710,13 @@
         started = true;
         status.textContent = "Starting engine...";
         try {
-          introAudio.currentTime = 10.5;
-          introAudio.play().catch((error) => {
-            console.warn("Intro audio was blocked by the browser.", error);
+          menuAudio.currentTime = 16.3;
+          menuAudio.play().catch((error) => {
+            console.warn("Menu audio was blocked by the browser.", error);
           });
           await init();
           status.textContent = "";
-          setOverlayScreen("intro-running");
-          window.setTimeout(showModeSelect, 6100);
+          showModeSelect();
         } catch (error) {
           console.error(error);
           setOverlayScreen(null);
